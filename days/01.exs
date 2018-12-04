@@ -10,7 +10,7 @@ defmodule SolutionPartTwo do
   def solve(input) do
     input
     |> Enum.map(&String.to_integer/1)
-    |> loop_reduce_while({0, [], false})
+    |> loop_reduce_while({0, [0], false})
     |> elem(1)
     |> List.first()
   end
@@ -27,9 +27,10 @@ defmodule SolutionPartTwo do
   defp cumulate_frequencies(value, {current_frequency, frequencies, found}) do
     new_frequency = current_frequency + value
 
-    case Enum.find(frequencies, nil, fn frequency -> frequency == new_frequency end) do
-      nil -> {:cont, {new_frequency, [new_frequency | frequencies], found}}
-      _ -> {:halt, {current_frequency, [new_frequency | frequencies], true}}
+    if Enum.member?(frequencies, new_frequency) do
+      {:halt, {current_frequency, [new_frequency | frequencies], true}}
+    else
+      {:cont, {new_frequency, [new_frequency | frequencies], found}}
     end
   end
 end
@@ -43,24 +44,16 @@ defmodule SolutionTest do
   alias SolutionPartTwo, as: PartTwo
 
   test "Part I" do
-    input = ["1", "2", "3", "-1"]
-    result = 5
-
-    assert PartOne.solve(input) == result
+    assert PartOne.solve(["+1", "+1", "+1"]) == 3
+    assert PartOne.solve(["+1", "+1", "-2"]) == 0
+    assert PartOne.solve(["-1", "-2", "-3"]) == -6
   end
 
   test "Part II" do
-    input = ["1", "2", "-3", "-1", "4"]
-    result = 3
-
-    assert PartTwo.solve(input) == result
-  end
-
-  test "Part II loop" do
-    input = ["1", "2", "-3", "-1"]
-    result = 0
-
-    assert PartTwo.solve(input) == result
+    assert PartTwo.solve(["+1", "-1"]) == 0
+    assert PartTwo.solve(["+3", "+3", "+4", "-2", "-4"]) == 10
+    assert PartTwo.solve(["-6", "+3", "+8", "+5", "-6"]) == 5
+    assert PartTwo.solve(["+7", "+7", "-2", "-7", "-4"]) == 14
   end
 end
 
