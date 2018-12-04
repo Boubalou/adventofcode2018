@@ -19,17 +19,11 @@ defmodule SolutionTest do
   alias SolutionPartTwo, as: PartTwo
 
   test "Part I" do
-    input = 'test'
-    result = 'test'
-
-    assert PartOne.solve(input) == result
+    assert PartOne.solve('test') == 'test'
   end
 
   test "Part II" do
-    input = 'test'
-    result = 'test'
-
-    assert PartTwo.solve(input) == result
+    assert PartTwo.solve('test') == 'test'
   end
 end
 
