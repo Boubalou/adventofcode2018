@@ -30,8 +30,31 @@ end
 
 defmodule SolutionPartTwo do
   def solve(input) do
-    input
+    input_letters = Enum.map(input, &String.graphemes/1)
+    letters_count = Enum.count(List.first(input_letters))
+
+    input_letters
+    |> Enum.reduce_while(nil, fn left_letters, _ ->
+      Enum.reduce_while(input_letters, nil, fn right_letters, _ ->
+        left_letters
+        |> Enum.with_index()
+        |> Enum.reject(fn {value, index} ->
+          value != Enum.fetch!(right_letters, index)
+        end)
+        |> build_box_id(letters_count)
+      end)
+      |> case do
+        nil -> {:cont, nil}
+        value -> {:halt, value}
+      end
+    end)
   end
+
+  defp build_box_id(letters, letters_count) when length(letters) == letters_count - 1 do
+    {:halt, Enum.map(letters, fn value -> elem(value, 0) end) |> Enum.join()}
+  end
+
+  defp build_box_id(_, _), do: {:cont, nil}
 end
 
 ExUnit.start()
@@ -65,6 +88,6 @@ input
 
 IO.puts("\nSolving Part II")
 IO.puts("---------------")
-#input
-#|> SolutionPartTwo.solve()
-#|> IO.puts()
+input
+|> SolutionPartTwo.solve()
+|> IO.puts()
